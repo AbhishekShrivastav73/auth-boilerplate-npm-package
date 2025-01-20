@@ -1,11 +1,9 @@
 ---
-
 # **Auth Boilerplate for MERN Stack**
 
 A simple, customizable authentication boilerplate designed for **MERN Stack** applications. This package provides pre-built routes for **login** and **signup**, along with JWT-based authentication and bcrypt password hashing.
 
 Perfect for developers who want to quickly implement authentication without manually writing all the boilerplate code.
-
 ---
 
 ## 🚀 **Features**
@@ -64,7 +62,7 @@ app.use(express.json());
 // Define Mongoose User Model (modify according to your needs)
 const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
 });
 const User = mongoose.model("User", UserSchema);
 
@@ -75,9 +73,13 @@ const authRoutes = setupAuth(User, "your_secret_key");
 app.use("/auth", authRoutes);
 
 // Connect to MongoDB (replace with your own connection string)
-mongoose.connect("mongodb://localhost:27017/yourdb", { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose
+  .connect("mongodb://localhost:27017/yourdb", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
 
 // Start the server
 app.listen(3000, () => {
@@ -101,10 +103,12 @@ Your authentication routes will now be available under `/auth`.
 To create a new user, send a `POST` request to `/auth/signup` with the following data:
 
 - **Request Body**:
+
   ```json
   {
-    "username": "your_username",
-    "password": "your_password"
+    "username": "user123",
+    "password": "securepassword",
+    "email": "user123@example.com"
   }
   ```
 
@@ -120,10 +124,11 @@ To create a new user, send a `POST` request to `/auth/signup` with the following
 To log in, send a `POST` request to `/auth/login` with the following data:
 
 - **Request Body**:
+
   ```json
   {
-    "username": "your_username",
-    "password": "your_password"
+    "username": "user123",
+    "password": "securepassword"
   }
   ```
 
@@ -187,4 +192,3 @@ If you have any questions or need further assistance, feel free to reach out!
 **Enjoy building your MERN stack application with ease!** 😊
 
 ---
-

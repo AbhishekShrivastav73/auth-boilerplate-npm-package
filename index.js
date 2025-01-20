@@ -1,63 +1,55 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const express = require('express');
 
-function setupAuth(UserModel, secretKey) {
+const setupAuth = (UserModel, secretKey) => {
     if (!UserModel || !secretKey) {
-        throw new Error("Model and secretKey are required!");
+        throw new Error('Model and secret key are required!');
     }
 
     const router = express.Router();
 
-    // Sign-up route
-    router.post("/", async (req, res) => {
-        const { action, username, password, ...extraData } = req.body;
-
-        if (!action || !username || !password) {
-            return res.status(400).json({ error: "Action, username, and password are required!" });
-        }
-
+    // Signup Route
+    router.post('/signup', async (req, res) => {
         try {
-            if (action === "signup") {
-                // Check if user already exists
-                const existingUser = await UserModel.findOne({ username });
-                if (existingUser) {
-                    return res.status(400).json({ error: "Username already exists!" });
-                }
+            const { username, password, ...additionalData } = req.body;
 
-                // Hash password and save user
-                const hashedPassword = await bcrypt.hash(password, 10);
-                const newUser = new UserModel({ username, password: hashedPassword, ...extraData });
-                await newUser.save();
-                res.status(201).json({ message: "User created successfully!" });
-            } else if (action === "login") {
-                // Find user and validate password
-                const user = await UserModel.findOne({ username });
-                if (!user) {
-                    return res.status(404).json({ error: "User not found!" });
-                }
+            // Hash password
+            const hashedPassword = await bcrypt.hash(password, 10);
 
-                const isPasswordValid = await bcrypt.compare(password, user.password);
-                if (!isPasswordValid) {
-                    return res.status(401).json({ error: "Invalid credentials!" });
-                }
+            // Create new user
+            const newUser = new UserModel({ username, password: hashedPassword, ...additionalData });
+            await newUser.save();
 
-                // Generate JWT token
-                const token = jwt.sign(
-                    { id: user._id, username: user.username },
-                    secretKey,
-                    { expiresIn: "1h" }
-                );
-                res.status(200).json({ message: "Login successful!", token });
-            } else {
-                res.status(400).json({ error: "Invalid action!" });
-            }
+            res.status(201).json({ message: 'User created successfully!' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
+    // Login Route
+    router.post('/login', async (req, res) => {
+        try {
+            const { username, password } = req.body;
+
+            // Check if user exists
+            const user = await UserModel.findOne({ username });
+            if (!user) return res.status(404).json({ error: 'User not found!' });
+
+            // Compare passwords
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) return res.status(401).json({ error: 'Invalid credentials!' });
+
+            // Generate token
+            const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
+
+            res.status(200).json({ message: 'Login successful!', token });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     });
 
     return router;
-}
+};
 
 module.exports = setupAuth;
