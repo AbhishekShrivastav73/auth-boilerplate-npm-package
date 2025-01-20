@@ -1,6 +1,6 @@
 {
-  "name": "auth-boilerplate",
-  "version": "1.0.2",
+  "name": "auth-boilerplate-express",
+  "version": "1.0.3",
   "description": "A simple authentication boilerplate for MERN stack apps.",
   "main": "index.js",
   "dependencies": {
