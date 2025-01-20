@@ -13,6 +13,7 @@ Perfect for developers who want to quickly implement authentication without manu
 - **Pre-built Routes**: Easy-to-use login and signup routes.
 - **Customizable**: Simple to integrate with your existing MongoDB `User` model.
 - **Minimal Setup**: Just install and configure your MongoDB model and secret key.
+- **Protected Routes**: Implement protected routes with middleware functions that verify the JWT token passed in the request headers. This ensures that only authenticated users can access certain routes.
 
 ---
 
@@ -71,6 +72,11 @@ const authRoutes = setupAuth(User, "your_secret_key");
 
 // Use the authentication routes in your app
 app.use("/auth", authRoutes);
+
+// Protected Route Example
+app.get("/protected", authenticateToken("my_secret_key"), (req, res) => {
+  res.json({ message: "This is a protected route!", user: req.user });
+});
 
 // Connect to MongoDB (replace with your own connection string)
 mongoose
@@ -145,7 +151,27 @@ You can use this **JWT token** for future authenticated requests by including it
 Authorization: Bearer your_jwt_token
 ```
 
+### Accessing Protected Routes
+
+The package comes with a middleware function called `authenticateToken` that you can use to protect routes. This middleware function verifies the JWT token passed in the `Authorization` header of the request. If the token is valid, the request is allowed to continue; otherwise, it returns a 401 Unauthorized response
+
+- **Authorization Header**:
+
+  ```http
+  Authorization: Bearer <JWT_TOKEN>
+  ```
+
+  ```javascript
+  // Protected Route Example
+  app.get("/protected", authenticateToken("my_secret_key"), (req, res) => {
+    res.json({ message: "This is a protected route!", user: req.user });
+  });
+  ```
+
+```
+
 ---
+
 
 ## 💡 **Customization**
 
@@ -192,3 +218,4 @@ If you have any questions or need further assistance, feel free to reach out!
 **Enjoy building your MERN stack application with ease!** 😊
 
 ---
+```
