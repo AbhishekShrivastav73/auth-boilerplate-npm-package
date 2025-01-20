@@ -168,7 +168,7 @@ The package comes with a middleware function called `authenticateToken` that you
   });
   ```
 
-```
+
 
 ---
 
@@ -218,4 +218,4 @@ If you have any questions or need further assistance, feel free to reach out!
 **Enjoy building your MERN stack application with ease!** 😊
 
 ---
-```
+
