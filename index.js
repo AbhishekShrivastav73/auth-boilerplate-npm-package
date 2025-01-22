@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const authenticateToken = require("./utils/middleware");
 const CRUD = require("./CRUD/crudRoutes");
+const verifyRole = require("./utils/RBAC");
 
 const Auth = (UserModel, secretKey) => {
   if (!UserModel || !secretKey) {
@@ -65,4 +66,4 @@ const Auth = (UserModel, secretKey) => {
   return router;
 };
 
-module.exports = { Auth, authenticateToken, CRUD };
+module.exports = { Auth, authenticateToken, CRUD, verifyRole };
