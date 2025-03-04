@@ -4,7 +4,7 @@ A simple yet powerful authentication boilerplate for building MERN stack applica
 
 ---
 
-## Features
+## Features.
 
 ### 1. **Authentication**
 - User Signup
